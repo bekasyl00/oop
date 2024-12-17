@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Четыре рейса
+
         Flight flight1 = new Flight();
         flight1.number = "A123";
         flight1.destination = "New York";
@@ -31,20 +31,20 @@ public class Main {
         flight4.destination = "Shymkent";
         flight4.seats = 7;
 
-        // Показать доступные рейсы
+
         System.out.println("Available Flights:");
         System.out.println("1. " + flight1.number + " to " + flight1.destination + " (Seats: " + flight1.seats + ")");
         System.out.println("2. " + flight2.number + " to " + flight2.destination + " (Seats: " + flight2.seats + ")");
         System.out.println("3. " + flight3.number + " to " + flight3.destination + " (Seats: " + flight3.seats + ")");
         System.out.println("4. " + flight4.number + " to " + flight4.destination + " (Seats: " + flight4.seats + ")");
 
-        // Выбор рейса
+
         System.out.print("Select a flight (1 to 4): ");
         int choice = scanner.nextInt();
 
         Flight selectedFlight = null;
 
-        // Логика выбора рейса
+
         if (choice == 1) {
             selectedFlight = flight1;
         } else if (choice == 2) {
@@ -56,18 +56,18 @@ public class Main {
         } else {
             System.out.println("Invalid choice.");
             scanner.close();
-            return; // Завершаем программу при некорректном вводе
+            return;
         }
 
-        // Обработка пассажира
-        scanner.nextLine(); // Очистить буфер
+
+        scanner.nextLine();
         System.out.print("Enter passenger name: ");
         String name = scanner.nextLine();
 
         System.out.print("Enter passport number: ");
         String passport = scanner.nextLine();
 
-        // Проверка доступности мест
+
         if (selectedFlight.seats > 0) {
             selectedFlight.seats--;
             System.out.println("\nBooking Successful!");
