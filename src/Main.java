@@ -1,27 +1,102 @@
 import java.util.Scanner;
 
-class Book {
-    String title;
-    String author;
-    boolean isAvailable;
+class Flight {
+    private String number;
+    private String destination;
+    private int seats;
 
-    public Book(String title, String author) {
-        this.title = title;
-        this.author = author;
-        this.isAvailable = true;
+    // Constructor
+    public Flight(String number, String destination, int seats) {
+        this.number = number;
+        this.destination = destination;
+        this.seats = seats;
     }
 
-    public String getInfo() {
-        return title + " by " + author + " (" + (isAvailable ? "Есть в продаже" : "Не в продаже") + ")";
+    // Getters
+    public String getNumber() {
+        return number;
     }
 
-    public void borrowBook() {
-        if (isAvailable) {
-            isAvailable = false;
-            System.out.println("Book borrowed successfully.");
-        } else {
-            System.out.println("Book is not available.");
+    public String getDestination() {
+        return destination;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    // Setters
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
+
+    // Method to book a seat
+    public boolean bookSeat() {
+        if (seats > 0) {
+            seats--;
+            return true;
         }
+        return false;
+    }
+}
+
+class Passenger {
+    private String name;
+    private String passport;
+
+    // Constructor
+    public Passenger(String name, String passport) {
+        this.name = name;
+        this.passport = passport;
+    }
+
+    // Getters
+    public String getName() {
+        return name;
+    }
+
+    public String getPassport() {
+        return passport;
+    }
+
+    // Setters
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassport(String passport) {
+        this.passport = passport;
+    }
+}
+
+class Booking {
+    private Flight flight;
+    private Passenger passenger;
+
+    // Constructor
+    public Booking(Flight flight, Passenger passenger) {
+        this.flight = flight;
+        this.passenger = passenger;
+    }
+
+    // Method to confirm booking
+    public boolean confirm() {
+        return flight.bookSeat();
+    }
+
+    @Override
+    public String toString() {
+        return "Booking Details:\n" +
+                "Passenger: " + passenger.getName() + " (Passport: " + passenger.getPassport() + ")\n" +
+                "Flight: " + flight.getNumber() + " to " + flight.getDestination();
     }
 }
 
@@ -29,60 +104,49 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Добавляем книги
-        Book book1 = new Book("1984", "George Orwell");
-        Book book2 = new Book("To Kill a Mockingbird", "Harper Lee");
-        Book book3 = new Book("Абай жолы", "Мухтар Ауэзов");
-        Book book4 = new Book("Махаббат қызық мол жылдар", "Бердыбек Сокпакбаев");
+        // Create flights
+        Flight flight1 = new Flight("A123", "New York", 5);
+        Flight flight2 = new Flight("B456", "London", 3);
+        Flight flight3 = new Flight("D341", "Almaty", 8);
+        Flight flight4 = new Flight("S920", "Shymkent", 7);
 
-        boolean continueSystem = true;
+        Flight[] flights = {flight1, flight2, flight3, flight4};
 
-        while (continueSystem) {
-            // Список доступных книг
-            System.out.println("Available Books:");
-            System.out.println("1. " + book1.getInfo());
-            System.out.println("2. " + book2.getInfo());
-            System.out.println("3. " + book3.getInfo());
-            System.out.println("4. " + book4.getInfo());
+        // Display available flights
+        System.out.println("Available Flights:");
+        for (int i = 0; i < flights.length; i++) {
+            System.out.println((i + 1) + ". " + flights[i].getNumber() + " to " + flights[i].getDestination() + " (Seats: " + flights[i].getSeats() + ")");
+        }
 
-            // Пользователь выбирает книгу
-            System.out.print("Select a book to borrow (1, 2, 3, or 4): ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Очистка буфера
+        // Select a flight
+        System.out.print("Select a flight (1 to 4): ");
+        int choice = scanner.nextInt();
 
-            // Выбор книги
-            Book selectedBook = null;
-            if (choice == 1) {
-                selectedBook = book1;
-            } else if (choice == 2) {
-                selectedBook = book2;
-            } else if (choice == 3) {
-                selectedBook = book3;
-            } else if (choice == 4) {
-                selectedBook = book4;
-            } else {
-                System.out.println("Invalid choice. Please restart the program.");
-                return;
-            }
+        if (choice < 1 || choice > flights.length) {
+            System.out.println("Invalid choice.");
+            scanner.close();
+            return;
+        }
 
-            // Пользователь берёт книгу
-            selectedBook.borrowBook();
+        Flight selectedFlight = flights[choice - 1];
 
-            // Сохранение данных о пользователе
-            System.out.print("\nEnter your name to save the record: ");
-            String userName = scanner.nextLine();
+        // Get passenger details
+        scanner.nextLine(); // Consume newline
+        System.out.print("Enter passenger name: ");
+        String name = scanner.nextLine();
 
-            System.out.println("\nSaved Record:");
-            System.out.println("User: " + userName + " borrowed \"" + selectedBook.title + "\" by " + selectedBook.author);
+        System.out.print("Enter passport number: ");
+        String passport = scanner.nextLine();
 
-            // Предложение выбрать ещё книгу
-            System.out.print("\nЕщё книга нужна? (да/нет): ");
-            String continueChoice = scanner.nextLine();
+        Passenger passenger = new Passenger(name, passport);
+        Booking booking = new Booking(selectedFlight, passenger);
 
-            if (!"да".equalsIgnoreCase(continueChoice)) {
-                continueSystem = false;
-                System.out.println("Спасибо за использование нашей системы!");
-            }
+        // Confirm booking
+        if (booking.confirm()) {
+            System.out.println("\nBooking Successful!");
+            System.out.println(booking);
+        } else {
+            System.out.println("\nNo seats available on this flight.");
         }
 
         scanner.close();
